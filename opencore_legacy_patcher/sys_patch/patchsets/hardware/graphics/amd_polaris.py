@@ -79,6 +79,9 @@ class AMDPolaris(BaseHardware):
         if self._computer.real_model in ["MacBookPro13,3"]:
             # Since dropped at the same time, we can use the same patches
             result = AMDLegacyGCN(self._xnu_major, self._xnu_minor, self._os_build, self._constants)._model_specific_patches()
+            # Metadata-compatible compiler payload for the verified model/build.
+            if self._xnu_major == os_data.sequoia.value and self._os_build == "24H23":
+                result["AMD Legacy GCN"][PatchType.OVERWRITE_SYSTEM_VOLUME]["/System/Library/Extensions"]["AMDShared.bundle"] = "12.5-24H23-metadata"
             # Have to rename 'AMD Legacy GCN' to 'AMD Polaris' for model detection
             return {"AMD Polaris": result["AMD Legacy GCN"]}
 
